@@ -1,8 +1,11 @@
 import express from 'express'
 import BlogService from '../services/BlogService';
+import CommentService from '../services/CommentService'
 import { Authorize } from '../middleware/authorize.js'
 
+
 let _blogService = new BlogService().repository
+let _commentService = new CommentService().repository
 
 export default class BlogController {
   constructor() {
@@ -31,6 +34,13 @@ export default class BlogController {
         throw new Error("Invalid Id")
       }
       res.send(data)
+    } catch (error) { next(error) }
+  }
+
+  async getComments(req, res, next) {
+    try {
+      let data = await _commentService.find({ blogId: req.params.id }).populate("blogId", name)
+      return res.send(data)
     } catch (error) { next(error) }
   }
 
