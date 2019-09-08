@@ -1,7 +1,7 @@
 import express from 'express'
 import BlogService from '../services/BlogService';
-import CommentService from '../services/CommentService'
 import { Authorize } from '../middleware/authorize.js'
+import CommentService from '../services/CommentService'
 
 
 let _blogService = new BlogService().repository
@@ -23,7 +23,7 @@ export default class BlogController {
   async getAll(req, res, next) {
     try {
       //i need to make "author" in the blogService blog model = "name" in the userService user model
-      let data = await _blogService.find({})
+      let data = await _blogService.find({}).populate("author")
       return res.send(data)
     } catch (error) { next(error) }
 
@@ -41,7 +41,7 @@ export default class BlogController {
 
   async getComments(req, res, next) {
     try {
-      let data = await _commentService.find({ blogId: req.params.id }).populate("blog", "authorId")
+      let data = await _commentService.find({ blogId: req.params.id })
       return res.send(data)
     } catch (error) { next(error) }
   }
@@ -50,7 +50,6 @@ export default class BlogController {
     try {
       //NOTE the user id is accessable through req.body.uid, never trust the client to provide you this information
       req.body.authorId = req.session.uid
-      req.body.author = req.body.name
       let data = await _blogService.create(req.body)
       res.send(data)
     } catch (error) { next(error) }
@@ -78,5 +77,4 @@ export default class BlogController {
     } catch (error) { next(error) }
 
   }
-
 }
