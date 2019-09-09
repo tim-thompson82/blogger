@@ -19,7 +19,7 @@ export default class CommentController {
 
     async getAll(req, res, next) {
         try {
-            let data = await _commentService.find({})
+            let data = await _commentService.find({}).populate('author').populate('BlogId')
                 .populate("author")
             return res.send(data)
         } catch (error) { next(error) }
@@ -28,7 +28,7 @@ export default class CommentController {
 
     async getById(req, res, next) {
         try {
-            let data = await _commentService.findById(req.params.id).populate("author")
+            let data = await _commentService.findById(req.params.id).populate("author").populate('BlogId')
             if (!data) {
                 throw new Error("Invalid Id")
             }
@@ -37,7 +37,7 @@ export default class CommentController {
     }
     async getCommentByBlogId(req, res, next) {
         try {
-            let comment = await _commentService.find({})
+            let comment = await _commentService.find({}).populate('author').populate('BlogId')
             return res.send(comment)
         } catch (error) { next(error) }
     }
