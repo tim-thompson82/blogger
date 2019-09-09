@@ -41,7 +41,7 @@ export default class BlogController {
 
   async getComments(req, res, next) {
     try {
-      let data = await _commentService.find({ blogId: req.params.id }).populate("author")
+      let data = await _commentService.find({ blogId: req.params.id })
       return res.send(data)
     } catch (error) { next(error) }
   }

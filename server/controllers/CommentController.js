@@ -19,7 +19,7 @@ export default class CommentController {
 
     async getAll(req, res, next) {
         try {
-            let data = await _commentService.find({}).populate("author")
+            let data = await _commentService.find({})
                 .populate("author")
             return res.send(data)
         } catch (error) { next(error) }
