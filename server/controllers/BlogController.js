@@ -23,7 +23,7 @@ export default class BlogController {
   async getAll(req, res, next) {
     try {
       //i need to make "author" in the blogService blog model = "name" in the userService user model
-      let data = await _blogService.find({}).populate("author")
+      let data = await _blogService.find({}).populate("author", "name")
       return res.send(data)
     } catch (error) { next(error) }
 
@@ -31,7 +31,7 @@ export default class BlogController {
 
   async getById(req, res, next) {
     try {
-      let data = await _blogService.findById(req.params.id).populate("author")
+      let data = await _blogService.findById(req.params.id).populate("author", "name")
       if (!data) {
         throw new Error("Invalid Id")
       }
@@ -41,7 +41,7 @@ export default class BlogController {
 
   async getComments(req, res, next) {
     try {
-      let data = await _commentService.find({ blogId: req.params.id })
+      let data = await _commentService.find({ blogId: req.params.id }).populate('author', "name")
       return res.send(data)
     } catch (error) { next(error) }
   }

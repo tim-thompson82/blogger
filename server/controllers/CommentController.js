@@ -10,7 +10,7 @@ export default class CommentController {
             //NOTE all routes after the authenticate method will require the user to be logged in to access
             .get('', this.getAll)
             .get('/:id', this.getById)
-            .get('/:id/blogs', this.getCommentByBlogId)
+            // .get('/:id/blogs', this.getCommentByBlogId)
             .use(Authorize.authenticated)
             .post('', this.create)
             .put('/:id', this.edit)
@@ -19,7 +19,7 @@ export default class CommentController {
 
     async getAll(req, res, next) {
         try {
-            let data = await _commentService.find({}).populate('author').populate('BlogId')
+            let data = await _commentService.find({}).populate("author", "name")
                 .populate("author")
             return res.send(data)
         } catch (error) { next(error) }
@@ -28,24 +28,24 @@ export default class CommentController {
 
     async getById(req, res, next) {
         try {
-            let data = await _commentService.findById(req.params.id).populate("author").populate('BlogId')
+            let data = await _commentService.findById(req.params.id).populate("author", "name")
             if (!data) {
                 throw new Error("Invalid Id")
             }
             res.send(data)
         } catch (error) { next(error) }
     }
-    async getCommentByBlogId(req, res, next) {
-        try {
-            let comment = await _commentService.find({}).populate('author').populate('BlogId')
-            return res.send(comment)
-        } catch (error) { next(error) }
-    }
+    // async getCommentByBlogId(req, res, next) {
+    //     try {
+    //         let comment = await _commentService.find({}).populate('author').populate('BlogId')
+    //         return res.send(comment)
+    //     } catch (error) { next(error) }
+    // }
 
     async create(req, res, next) {
         try {
             //NOTE the user id is accessable through req.body.uid, never trust the client to provide you this information
-            req.body.authorId = req.session.uid
+            req.body.author = req.session.uid
             let data = await _commentService.create(req.body)
             res.send(data)
         } catch (error) { next(error) }
