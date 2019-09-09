@@ -1,8 +1,10 @@
 import express from 'express'
 import CommentService from '../services/CommentService';
 import { Authorize } from '../middleware/authorize.js'
+import BlogService from '../services/BlogService';
 
 let _commentService = new CommentService().repository
+let _blogService = new BlogService().repository
 
 export default class CommentController {
     constructor() {
@@ -10,7 +12,6 @@ export default class CommentController {
             //NOTE all routes after the authenticate method will require the user to be logged in to access
             .get('', this.getAll)
             .get('/:id', this.getById)
-            // .get('/:id/blogs', this.getCommentByBlogId)
             .use(Authorize.authenticated)
             .post('', this.create)
             .put('/:id', this.edit)
@@ -35,12 +36,6 @@ export default class CommentController {
             res.send(data)
         } catch (error) { next(error) }
     }
-    // async getCommentByBlogId(req, res, next) {
-    //     try {
-    //         let comment = await _commentService.find({}).populate('author').populate('BlogId')
-    //         return res.send(comment)
-    //     } catch (error) { next(error) }
-    // }
 
     async create(req, res, next) {
         try {
